@@ -2,6 +2,7 @@ package tw.edu.pu.csim.tcyang.basicui
 
 
 import android.app.Activity
+import android.media.MediaPlayer
 import android.os.Bundle
 import android.widget.Toast
 import androidx.activity.ComponentActivity
@@ -29,6 +30,7 @@ import androidx.compose.material3.ButtonDefaults.buttonColors
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
@@ -83,6 +85,18 @@ fun Main(modifier: Modifier = Modifier) {
 
     // 取得當前的 Context
     val context = LocalContext.current
+    // 使用 remember 儲存 MediaPlayer 實例
+    var mper: MediaPlayer? by remember { mutableStateOf(null) }
+
+    // 使用 DisposableEffect 來管理 MediaPlayer 的生命週期
+    // 當 Main Composable 離開組合時，會執行 onDispose 區塊
+    DisposableEffect(Unit) { // Unit 作為 key 表示這個 effect 只會執行一次
+        onDispose {
+            // 釋放 MediaPlayer 資源，避免記憶體洩漏
+            mper?.release()
+            mper = null
+        }
+    }
 
 
     Column (
@@ -178,7 +192,12 @@ fun Main(modifier: Modifier = Modifier) {
         Spacer(modifier = Modifier.size(10.dp))
         Row{
             Button(onClick = {
-            },
+                mper?.release()  //釋放資源
+                mper = null // 清除舊引用
+
+                mper = MediaPlayer.create(context, R.raw.fly) //設定音樂
+                mper?.start()  //開始播放
+        },
                 modifier = Modifier
                     .fillMaxWidth(0.33f)
                     .fillMaxHeight(0.8f),
@@ -197,7 +216,13 @@ fun Main(modifier: Modifier = Modifier) {
             Spacer(modifier = Modifier.size(10.dp))
 
             Button(onClick = {
-            },
+                mper?.release()  //釋放資源
+                mper = null // 清除舊引用
+
+                mper = MediaPlayer.create(context, R.raw.fly) //設定音樂
+                mper?.start()
+              },  //開始播放
+
                 modifier = Modifier
                     .fillMaxWidth(0.5f)
                     .fillMaxHeight(0.4f),
