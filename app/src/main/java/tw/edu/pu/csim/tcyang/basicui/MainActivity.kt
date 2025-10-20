@@ -203,7 +203,7 @@ fun Main(modifier: Modifier = Modifier) {
                     .fillMaxHeight(0.4f),
                 colors = buttonColors(Color.Blue)
 
-            ) {
+            ){
                 Text(text = "展翅飛翔", color = Color.White)
                 Image(
                     painterResource(id = R.drawable.fly),
